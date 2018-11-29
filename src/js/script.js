@@ -33,9 +33,9 @@
       fieldOfView,
       aspectRatio
     );
-    camera.position.x = -900;
-    camera.position.y = 200;
-    camera.position.z = -1500;
+    camera.position.x = 0;
+    camera.position.y = 500;
+    camera.position.z = 200;
 
 
     //renderer instellen
