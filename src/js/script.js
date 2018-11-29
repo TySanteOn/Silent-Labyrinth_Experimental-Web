@@ -12,10 +12,14 @@
     container;
 
   const init = () => {
+    document.body.appendChild(WEBVR.createButton(renderer));
+
     createScene();
+    createCamera();
     createLight();
     loadMaze();
     loop(); //start render loop
+    renderVr();
   };
 
   const createScene = () => {
@@ -28,21 +32,14 @@
     aspectRatio = WIDTH / HEIGHT;
     fieldOfView = 60;
 
-    // //camera aanmaken
-    camera = new THREE.PerspectiveCamera(
-      fieldOfView,
-      aspectRatio
-    );
-    camera.position.x = 0;
-    camera.position.y = 500;
-    camera.position.z = 200;
-
 
     //renderer instellen
     renderer = new THREE.WebGLRenderer({
       alpha: true,
       antialias: true
     });
+
+    renderer.vr.enabled = true;
 
     //renderer koppelen & canvas aanmaken
     renderer.setSize(WIDTH, HEIGHT);
@@ -78,6 +75,13 @@
     renderer.render(scene, camera);
   }
 
+  const createCamera = () => {
+    camera = new THREE.PerspectiveCamera(fieldOfView, aspectRatio);
+    camera.position.x = 0;
+    camera.position.y = 500;
+    camera.position.z = 200;
+  };
+
   const createLight = () => {
     const pointLight = new THREE.PointLight(0xffffff, 1, 0, 2);
     pointLight.position.set(0, 0, 0);
@@ -89,9 +93,12 @@
   }
 
   const loop = () => {
-    requestAnimationFrame(loop);
+    renderer.setAnimationLoop(() => {
+      renderer.render(scene, camera);
+    });
+    // requestAnimationFrame(loop);
 
-    renderer.render(scene, camera);
+    // renderer.render(scene, camera);
   };
 
   const loadMaze = () => {
@@ -99,6 +106,10 @@
     loader.load('data/maze-floor.dae.json', object => {
       scene.add(object);
     });
+  };
+
+  const renderVr = () => {
+    
   };
 
   init();
