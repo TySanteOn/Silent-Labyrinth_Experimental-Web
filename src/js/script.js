@@ -1,6 +1,8 @@
 {
   let loader,
     scene,
+    startX,
+    startY,
     WIDTH,
     HEIGHT,
     camera,
@@ -11,6 +13,7 @@
 
   const init = () => {
     createScene();
+    createLight();
     loadMaze();
     loop(); //start render loop
   };
@@ -30,9 +33,10 @@
       fieldOfView,
       aspectRatio
     );
-    camera.position.x = 800;
+    camera.position.x = -900;
     camera.position.y = 200;
-    camera.position.z = 1500;
+    camera.position.z = -1500;
+
 
     //renderer instellen
     renderer = new THREE.WebGLRenderer({
@@ -46,7 +50,43 @@
 
     container = document.getElementById('world');
     container.appendChild(renderer.domElement);
+
+    renderer.domElement.addEventListener('mousedown', (e, renderer, camera) => downClbk(e, renderer, camera));
+    renderer.domElement.addEventListener('mouseup', (e, renderer, camera) => upClbk(e, renderer, camera));
   };
+
+  const downClbk = e => {
+    renderer.domElement.addEventListener('mousemove', moveClbk);
+    startX = e.clientX;
+    startY = e.clientY;
+  }
+
+  const upClbk = () => {
+    renderer.domElement.removeEventListener('mousemove', moveClbk);
+  }
+
+  const moveClbk = e => {
+    const delX = e.clientX - startX;
+    const delY = e.clientY - startY;
+    const width = window.innerWidth,
+      height = window.innerHeight,
+      min = Math.min(width, height);
+    camera.rotation.x += delY / min;
+    camera.rotation.y += delX / min;
+    startX = e.clientX;
+    startY = e.clientY;
+    renderer.render(scene, camera);
+  }
+
+  const createLight = () => {
+    const pointLight = new THREE.PointLight(0xffffff, 1, 0, 2);
+    pointLight.position.set(0, 0, 0);
+    pointLight.castShadow = true;
+    scene.add(pointLight);
+
+    const hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x000000, 1);
+    scene.add(hemisphereLight);
+  }
 
   const loop = () => {
     requestAnimationFrame(loop);
@@ -55,40 +95,10 @@
   };
 
   const loadMaze = () => {
-    loader = new THREE.SVGLoader();
-    loader.load('data/maze01.svg', paths);
-  };
-
-  const paths = (paths) => {
-    console.log(paths);
-
-    const group = new THREE.Group();
-
-    for (let i = 0; i < paths.length; i++) {
-
-      const path = paths[i];
-
-      const material = new THREE.MeshBasicMaterial({
-        color: path.color,
-        side: THREE.DoubleSide,
-        depthWrite: false
-      });
-
-      const shapes = path.toShapes(true);
-
-      for (let j = 0; j < shapes.length; j++) {
-
-        const shape = shapes[j];
-        const geometry = new THREE.ShapeBufferGeometry(shape);
-        const mesh = new THREE.Mesh(geometry, material);
-        group.add(mesh);
-
-      };
-
-    };
-
-    scene.add(group);
-
+    loader = new THREE.ObjectLoader();
+    loader.load('data/maze-floor.dae.json', object => {
+      scene.add(object);
+    });
   };
 
   init();
