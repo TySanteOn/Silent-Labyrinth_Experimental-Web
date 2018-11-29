@@ -1,25 +1,25 @@
-class Object {
+class Sphere {
   constructor() {
     this.mesh = new THREE.Object3D();
 
-    const geom = new THREE.BoxGeometry(1, 1, 1);
+    const geom = new THREE.SphereGeometry(10);
 
     const mat = new THREE.MeshPhongMaterial({
-      color: '#FFFFFF',
-      // flatShading: true,
+      color: 0xffffff,
+      // wireframe: true,
+      flatShading: true,
     });
 
       const m = new THREE.Mesh(geom, mat)
 
       m.position.x = 0;
       m.position.y = 0;
-      m.position.z = 10;
-      m.rotation.z = 2;
-      m.rotation.y = 1;
-      const s = 400;
-      m.scale.set(s, s, s);
+      m.position.z = 0;
+      // m.rotation.z = ;
+      // m.rotation.y = 1;
+      // m.scale.set(s, s, s);
 
-      // m.castShadow = true;
+      m.castShadow = true;
       // m.receiveShadow = true;
 
       this.mesh.add(m);
@@ -31,4 +31,4 @@ class Object {
 
 };
 
-export default Object;
+export default Sphere;
