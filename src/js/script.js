@@ -1,8 +1,13 @@
+import Player from './classes/Player.js';
+//import Maze from './classes/Maze.js';
+
 {
   let loader,
     scene,
     startX,
     startY,
+    player,
+    maze,
     WIDTH,
     HEIGHT,
     camera,
@@ -11,11 +16,22 @@
     renderer,
     container;
 
+  let hemisphereLight,
+    shadowLight,
+    pointLight;
+
+  let playerX,
+    playerY,
+    playerZ;
+
   const init = () => {
     createScene();
     createLight();
     loadMaze();
+    createPlayer();
     loop(); //start render loop
+
+    document.addEventListener('keydown', handleKeyDown);
   };
 
   const createScene = () => {
@@ -33,9 +49,10 @@
       fieldOfView,
       aspectRatio
     );
-    camera.position.x = -900;
-    camera.position.y = 200;
-    camera.position.z = -1500;
+    camera.position.x = 200;
+    camera.position.y = 1000;
+    camera.position.z = 200;
+    camera.rotation.x = 300;
 
 
     //renderer instellen
@@ -79,26 +96,73 @@
   }
 
   const createLight = () => {
-    const pointLight = new THREE.PointLight(0xffffff, 1, 0, 2);
-    pointLight.position.set(0, 0, 0);
+    pointLight = new THREE.PointLight(0xffffff, 1, 0, 2);
+    pointLight.position.set(playerX, 0, playerZ);
     pointLight.castShadow = true;
     scene.add(pointLight);
 
-    const hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x000000, 1);
+    hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x000000, 1);
     scene.add(hemisphereLight);
+
+    // shadowLight = new THREE.DirectionalLight(0xffffff, .9);
+    // scene.add(shadowLight);
+  }
+
+  const loadMaze = () => {
+    const loader = new THREE.ObjectLoader();
+    loader.load('data/maze-floor.dae.json', object => {
+      scene.add(object);
+    });
+  };
+
+  const createPlayer = () => {
+    player = new Player();
+    //l&r
+    player.mesh.position.x = 80;
+    //voor&achter
+    player.mesh.position.z = 10;
+    //hoogte
+    player.mesh.position.y = 160;
+    scene.add(player.mesh);
+
+  }
+
+  const handleKeyDown = e => {
+    if (e.keyCode === 37) {
+      player.mesh.position.x -= 10;
+      console.log(player.mesh.position.x);
+      playerX = player.mesh.position.x;
+    }
+    if (e.keyCode === 39) {
+      player.mesh.position.x += 10;
+      playerX = player.mesh.position.x;
+    }
+    if (e.keyCode === 38) {
+      player.mesh.position.z -= 10;
+      playerY = player.mesh.position.y;
+    }
+    if (e.keyCode === 40) {
+      player.mesh.position.z += 10;
+      playerY = player.mesh.position.y;
+    }
+
+    if (e.keyCode === 37) {
+      camera.position.x -= 10;
+    }
+    if (e.keyCode === 39) {
+      camera.position.x += 10;
+    }
+    if (e.keyCode === 38) {
+      camera.position.z -= 10;
+    }
+    if (e.keyCode === 40) {
+      camera.position.z += 10;
+    }
   }
 
   const loop = () => {
     requestAnimationFrame(loop);
-
     renderer.render(scene, camera);
-  };
-
-  const loadMaze = () => {
-    loader = new THREE.ObjectLoader();
-    loader.load('data/maze-floor.dae.json', object => {
-      scene.add(object);
-    });
   };
 
   init();
