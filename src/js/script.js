@@ -12,11 +12,11 @@
     container;
 
   const init = () => {
-    document.body.appendChild(WEBVR.createButton(renderer));
 
     createScene();
     createCamera();
     createLight();
+    document.body.appendChild(WEBVR.createButton(renderer));
     loadMaze();
     loop(); //start render loop
     renderVr();
