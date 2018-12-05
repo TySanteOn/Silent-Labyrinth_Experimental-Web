@@ -1,7 +1,8 @@
 let audioContext = null,
   meter = null,
   rafID = null,
-  volume = 0;
+  volume = 0,
+  micIsOn = false;
 
 const getMicVolume = () => {
   window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext;
@@ -14,6 +15,7 @@ const getMicVolume = () => {
         video: false
       })
       .then(stream => {
+        micIsOn = true;
         onMicrophoneGranted(stream);
       })
       .catch(err => {
