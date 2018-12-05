@@ -28,7 +28,6 @@ import Player from './classes/Player.js';
     createScene();
     createLight();
     loadMaze();
-    createPlayer();
     loop(); //start render loop
 
     document.addEventListener('keydown', handleKeyDown);
@@ -49,10 +48,10 @@ import Player from './classes/Player.js';
       fieldOfView,
       aspectRatio
     );
-    camera.position.x = 200;
-    camera.position.y = 1000;
-    camera.position.z = 200;
-    camera.rotation.x = 300;
+    camera.position.x = 100;
+    camera.position.y = 160;
+    camera.position.z = 20;
+    // camera.rotation.x = 300;
 
 
     //renderer instellen
@@ -96,10 +95,10 @@ import Player from './classes/Player.js';
   }
 
   const createLight = () => {
-    pointLight = new THREE.PointLight(0xffffff, 1, 0, 2);
-    pointLight.position.set(playerX, 0, playerZ);
-    pointLight.castShadow = true;
-    scene.add(pointLight);
+    // pointLight = new THREE.PointLight(0xffffff, 1, 0, 2);
+    // pointLight.position.set(playerX, 0, playerZ);
+    // pointLight.castShadow = true;
+    // scene.add(pointLight);
 
     hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x000000, 1);
     scene.add(hemisphereLight);
@@ -115,52 +114,25 @@ import Player from './classes/Player.js';
     });
   };
 
-  const createPlayer = () => {
-    player = new Player();
-    //l&r
-    player.mesh.position.x = 80;
-    //voor&achter
-    player.mesh.position.z = 10;
-    //hoogte
-    player.mesh.position.y = 160;
-    scene.add(player.mesh);
-
-  }
-
   const handleKeyDown = e => {
-    let vector = camera.getWorldDirection();
-    const angle = THREE.Math.radToDeg(Math.atan2(vector.x, vector.z));
+    let vector;
+    vector = camera.getWorldDirection(vector);
+    const angle = Math.atan2(vector.z, vector.x) * -1;
     console.log(angle);
 
     if (e.keyCode === 37) {
-      player.mesh.position.x -= 10;
-      console.log(player.mesh.position.x);
-      playerX = player.mesh.position.x;
+      camera.rotation.y += 10 * Math.PI / 180;
     }
     if (e.keyCode === 39) {
-      player.mesh.position.x += 10;
-      playerX = player.mesh.position.x;
+      camera.rotation.y -= 10 * Math.PI / 180;
     }
     if (e.keyCode === 38) {
-      player.mesh.position.z -= 10;
-      playerY = player.mesh.position.y;
+      camera.position.x += Math.cos(angle) * 20;
+      camera.position.z -= Math.sin(angle) * 20;
     }
     if (e.keyCode === 40) {
-      player.mesh.position.z += 10;
-      playerY = player.mesh.position.y;
-    }
-
-    if (e.keyCode === 37) {
-      camera.position.x -= 10;
-    }
-    if (e.keyCode === 39) {
-      camera.position.x += 10;
-    }
-    if (e.keyCode === 38) {
-      camera.position.z -= 10;
-    }
-    if (e.keyCode === 40) {
-      camera.position.z += 10;
+      camera.position.x -= Math.cos(angle) * 20;
+      camera.position.z += Math.sin(angle) * 20;
     }
   }
 
