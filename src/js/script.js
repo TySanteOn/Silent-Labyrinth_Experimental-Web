@@ -76,14 +76,11 @@
 
     container = document.getElementById('world');
     container.appendChild(renderer.domElement);
-
-    renderer.domElement.addEventListener('mousedown', (e, renderer, camera) => downClbk(e, renderer, camera));
-    renderer.domElement.addEventListener('mouseup', (e, renderer, camera) => upClbk(e, renderer, camera));
   };
 
   const loop = () => {
     requestAnimationFrame(loop);
-    editLightPower();
+    // editLightPower();
     renderer.render(scene, camera);
   };
 
