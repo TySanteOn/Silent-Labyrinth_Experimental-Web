@@ -19,6 +19,8 @@
     createCamera();
     loadMaze();
 
+    document.body.appendChild(WEBVR.createButton(renderer));
+
     createPulseLight();
 
     getMicVolume();
@@ -133,7 +135,7 @@
 
   const editLightPower = () => {
     if (micIsOn){
-      pointLight.power = volume * 100;
+      pointLight.power = volume * 20;
     }
   }
 
