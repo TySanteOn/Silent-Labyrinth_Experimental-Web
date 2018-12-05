@@ -128,6 +128,10 @@ import Player from './classes/Player.js';
   }
 
   const handleKeyDown = e => {
+    let vector = camera.getWorldDirection();
+    const angle = THREE.Math.radToDeg(Math.atan2(vector.x, vector.z));
+    console.log(angle);
+
     if (e.keyCode === 37) {
       player.mesh.position.x -= 10;
       console.log(player.mesh.position.x);
