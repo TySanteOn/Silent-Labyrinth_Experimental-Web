@@ -16,6 +16,8 @@
 
   let enemy, door, key;
 
+  let getal1, getal2, getal3;
+
   const keyPositions = [
     {
       x: 170,
@@ -35,7 +37,7 @@
     },
     {
       x: 1080,
-      z: 2440
+      z: 2320
     },
     {
       x: 2120,
@@ -50,7 +52,8 @@
     loadMaze();
     loadDoor();
     loadEnemy();
-    loadKey();
+    getRandomNumbers();
+    createKeys();
 
     createPulseLight();
 
@@ -121,7 +124,7 @@
     });
   };
 
-  const loadKey = () => {
+  const loadKey = (getal) => {
     loader = new THREE.ObjectLoader();
     loader.load('assets/data/key.dae.json', object => {
       key = object;
@@ -132,11 +135,50 @@
       key.castShadow = true;
 
       //links/rechts
-      key.position.x = 2120;
-      key.position.z = -880;
+      key.position.x = keyPositions[getal].x;
+      key.position.z = keyPositions[getal].z;
       scene.add(key);
     });
   };
+
+  const createKeys = () => {
+    // const getal1 = Math.random(0, 5);
+    // let getal2, getal3;
+
+    // let random = Math.random(0, 5);
+    // if (random === getal1) {
+    //   let random = Math.random(0, 5);
+    // } else {
+    //   let getal2 = random;
+    // }
+
+    // let random2 = Math.random(0, 5);
+    // if (random2 === getal1 && random2 === getal2) {
+    //   let random2 = Math.random(0, 5);
+    // } else {
+    //   let getal3 = random2;
+    // }
+
+    // console.log(getal1, getal2, getal3);
+    if (getal1 != getal2 && getal1 != getal3 && getal2 != getal3) {
+      const getallen = [getal1, getal2, getal3];
+      getallen.forEach(getal => {
+        loadKey(getal);
+      });
+    } else {
+      getRandomNumbers();
+      createKeys();
+    }
+
+  }
+
+  const getRandomNumbers = () => {
+    getal1 = Math.floor(Math.random() * 5);
+    getal2 = Math.floor(Math.random() * 5);
+    getal3 = Math.floor(Math.random() * 5);
+
+    console.log(getal1, getal2, getal3);
+  }
 
   const loadDoor = () => {
     loader = new THREE.ObjectLoader();
