@@ -1,4 +1,5 @@
 {
+
   let loader,
     scene,
     WIDTH,
@@ -10,13 +11,46 @@
     aspectRatio,
     renderer,
     container,
-    pointLight;
+    pointLight,
+    hemisphereLight;
+
+  let enemy, door, key;
+
+  const keyPositions = [
+    {
+      x: 170,
+      z: 180
+    },
+    {
+      x: -80,
+      z: 2050
+    },
+    {
+      x: -680,
+      z: 2340
+    },
+    {
+      x: 1240,
+      z: 350
+    },
+    {
+      x: 1080,
+      z: 2440
+    },
+    {
+      x: 2120,
+      z: 880
+    }
+  ];
 
 
   const init = () => {
     createScene();
     createCamera();
     loadMaze();
+    loadDoor();
+    loadEnemy();
+    loadKey();
 
     createPulseLight();
 
@@ -36,6 +70,7 @@
     pointLight.position.set(xPos, yPos, zPos);
     pointLight.castShadow = true;
     scene.add(pointLight);
+
   };
 
   const createCamera = () => {
@@ -52,11 +87,12 @@
       farPlane
     );
 
-    camera.position.x = 100;
-    camera.position.y = 160;
-    camera.position.z = 20;
+    camera.position.x = 2000;
+    camera.position.y = 2500;
+    camera.position.z = -1000;
+    camera.rotation.x = 300;
   }
-    
+
   const createScene = () => {
     WIDTH = window.innerWidth;
     HEIGHT = window.innerHeight;
@@ -70,7 +106,7 @@
       alpha: true,
       antialias: true
     });
-    
+
     renderer.setSize(WIDTH, HEIGHT);
     renderer.shadowMap.enabled = true;
 
@@ -78,16 +114,51 @@
     container.appendChild(renderer.domElement);
   };
 
-  const loop = () => {
-    requestAnimationFrame(loop);
-    // editLightPower();
-    renderer.render(scene, camera);
-  };
-
   const loadMaze = () => {
     loader = new THREE.ObjectLoader();
-    loader.load('data/maze-floor.dae.json', object => {
+    loader.load('assets/data/maze02.dae.json', object => {
       scene.add(object);
+    });
+  };
+
+  const loadKey = () => {
+    loader = new THREE.ObjectLoader();
+    loader.load('assets/data/key.dae.json', object => {
+      key = object;
+
+      key.scale.set(.1, .1, .1);
+      key.position.y = 180;
+      key.receiveShadow = true;
+      key.castShadow = true;
+
+      //links/rechts
+      key.position.x = 2120;
+      key.position.z = -880;
+      scene.add(key);
+    });
+  };
+
+  const loadDoor = () => {
+    loader = new THREE.ObjectLoader();
+    loader.load('assets/data/door.dae.json', object => {
+      door = object;
+
+      door.position.z = -998.3;
+      door.position.x = -800;
+
+      scene.add(door);
+    });
+  };
+
+  const loadEnemy = () => {
+    loader = new THREE.ObjectLoader();
+    loader.load('assets/data/enemy.dae.json', object => {
+      enemy = object;
+
+      enemy.scale.set(1.6, 1.6, 1.6);
+      enemy.position.y = 20;
+
+      scene.add(enemy);
     });
   };
 
@@ -118,10 +189,16 @@
   }
 
   const editLightPower = () => {
-    if (micIsOn){
+    if (micIsOn) {
       pointLight.power = volume * 20;
     }
   }
+
+  const loop = () => {
+    requestAnimationFrame(loop);
+    // editLightPower();
+    renderer.render(scene, camera);
+  };
 
   init();
 }
