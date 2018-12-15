@@ -244,10 +244,8 @@ import Player from "./classes/Player.js"
     let vector;
     vector = camera.getWorldDirection(vector);
     const angle = Math.atan2(vector.z, vector.x) * -1;
-
-    checkForHitCollision();
     
-    switch (e.key) {
+    switch (e.code) {
       case 'ArrowLeft':
         camera.rotation.y += (10 * Math.PI) / 180;
         break;
@@ -272,7 +270,7 @@ import Player from "./classes/Player.js"
       camera.position.set(playerX, playerY, playerZ);
       camera.rotation.x = 0;
     }
-    if (e.key === 'Space') {
+    if (e.code === 'Space') {
 
     }
 
@@ -307,22 +305,6 @@ import Player from "./classes/Player.js"
     //key.rotation.y += 0.05;
     renderer.render(scene, camera);
   };
-
-  const checkForHitCollision = () => {
-    //console.log(scene);
-    // for (let i = 0; i < player1.mesh.children[0].geometry.vertices.length; i++) {
-    //   const raycaster = new THREE.Raycaster();
-    //   raycaster.set(player1.mesh.position, player1.mesh.children[0].geometry.vertices[i]);
-    //   // console.log(raycaster);
-      
-    //   let intersects = raycaster.intersectObjects(scene.children[2].children);
-    //   if (intersects.length !== 0) {
-    //     console.log(intersects);
-
-    //   }
-    // }
-    
-  }
 
   init();
 }
