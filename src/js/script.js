@@ -2,6 +2,7 @@
 //import Key from "./classes/Key.js";
 
 import Player from "./classes/Player.js"
+import Enemy from "./classes/Enemy.js";
 
 {
 
@@ -17,6 +18,7 @@ import Player from "./classes/Player.js"
     renderer,
     container,
     pointLight,
+    hemisphereLight,
     player1,
     playerX = 100,
     playerY = 200,
@@ -78,6 +80,9 @@ import Player from "./classes/Player.js"
     getMicVolume();
     loop();
 
+    hemisphereLight = new THREE.HemisphereLight(0xffffff, 1);
+    scene.add(hemisphereLight);
+
     document.getElementById(`cameraFullMaze`).addEventListener('click', handleButtonClick);
     document.addEventListener('keypress', handleKeyDown);
   };
@@ -85,7 +90,7 @@ import Player from "./classes/Player.js"
   const handleButtonClick = () => {
     overview = !overview;
     if (overview) {
-      camera.position.set(500, 2500, 500);
+      camera.position.set(700, 3000, 700);
       camera.rotation.x = 300;
       camera.rotation.y = 0;
     }
@@ -97,7 +102,7 @@ import Player from "./classes/Player.js"
 
   const createPlayer = () => {
     const x = 50;
-    const y = 200;
+    const y = 180;
     const z = 20;
 
     player1 = new Player(x, y, z);
@@ -106,7 +111,7 @@ import Player from "./classes/Player.js"
 
   const createPulseLight = () => {
     const xPos = 100;
-    const yPos = 200;
+    const yPos = 180;
     const zPos = 20;
 
     pointLight = new THREE.PointLight(0xffffff, 1, 1000, 2);
@@ -135,7 +140,7 @@ import Player from "./classes/Player.js"
 //     camera.position.z = 180;
 //     camera.rotation.x = 300;
     camera.position.x = 100;
-    camera.position.y = 200;
+    camera.position.y = 180;
     camera.position.z = 20;
 
   }
@@ -228,15 +233,8 @@ import Player from "./classes/Player.js"
   };
 
   const loadEnemy = () => {
-    loader = new THREE.ObjectLoader();
-    loader.load('assets/data/enemy.dae.json', object => {
-      enemy = object;
-
-      enemy.scale.set(1.6, 1.6, 1.6);
-      enemy.position.y = 20;
-
-      scene.add(enemy);
-    });
+    enemy = new Enemy();
+    scene.add(enemy.mesh);
   };
 
   const handleKeyDown = e => {

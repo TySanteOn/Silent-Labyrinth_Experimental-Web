@@ -14,7 +14,7 @@ class Player {
 
         m.position.x = xPos;
         m.position.y = yPos;
-        m.position.y = zPos;
+        m.position.z = zPos;
 
         m.scale.set(50, 50, 50);
 
