@@ -234,7 +234,7 @@ import Enemy from "./classes/Enemy.js";
 
   const loadEnemy = () => {
     enemy = new Enemy();
-    scene.add(enemy.mesh);
+    scene.add(enemy.enemy);
   };
 
   const handleKeyDown = e => {
