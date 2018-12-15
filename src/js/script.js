@@ -247,18 +247,18 @@ import Player from "./classes/Player.js"
 
     checkForHitCollision();
     
-    switch (e.keyCode) {
-      case 37:
+    switch (e.key) {
+      case 'ArrowLeft':
         camera.rotation.y += (10 * Math.PI) / 180;
         break;
-      case 39:
+      case 'ArrowRight':
         camera.rotation.y -= (10 * Math.PI) / 180;
         break;
-      case 38:
+      case 'ArrowUp':
         playerX += Math.cos(angle) * 20;
         playerZ -= Math.sin(angle) * 20;
         break;
-      case 40:
+      case 'ArrowDown':
         playerX -= Math.cos(angle) * 20;
         playerZ += Math.sin(angle) * 20;
         break;
@@ -272,7 +272,7 @@ import Player from "./classes/Player.js"
       camera.position.set(playerX, playerY, playerZ);
       camera.rotation.x = 0;
     }
-    if (e.keyCode === 32) {
+    if (e.key === 'Space') {
 
     }
 
