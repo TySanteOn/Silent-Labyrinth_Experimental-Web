@@ -1,3 +1,5 @@
+import Key from "./classes/Key.js";
+
 {
 
   let loader,
@@ -18,30 +20,38 @@
 
   let getal1, getal2, getal3;
 
+  let keys = [];
+
   const keyPositions = [
     {
-      x: 170,
-      z: 180
+      x: 350,
+      z: 130,
+      direction: 11
     },
     {
       x: -80,
-      z: 2050
+      z: 2050,
+      direction: 22
     },
     {
       x: -680,
-      z: 2340
+      z: 2340,
+      direction: 22
     },
     {
       x: 1240,
-      z: 350
+      z: 350,
+      direction: 11
     },
     {
       x: 1080,
-      z: 2320
+      z: 2320,
+      direction: 22
     },
     {
-      x: 2120,
-      z: 880
+      x: 1450,
+      z: 880,
+      direction: 11
     }
   ];
 
@@ -58,7 +68,6 @@
     createPulseLight();
 
     getMicVolume();
-
     loop();
 
     document.addEventListener('keydown', handleKeyDown);
@@ -90,9 +99,9 @@
       farPlane
     );
 
-    camera.position.x = 1800;
+    camera.position.x = 230;
     camera.position.y = 3000;
-    camera.position.z = -700;
+    camera.position.z = 180;
     camera.rotation.x = 300;
   }
 
@@ -137,6 +146,10 @@
       //links/rechts
       key.position.x = keyPositions[getal].x;
       key.position.z = keyPositions[getal].z;
+      key.rotation.y = keyPositions[getal].direction;
+
+      keys.push(key);
+      console.log(keys);
       scene.add(key);
     });
   };
@@ -205,6 +218,9 @@
       camera.position.x -= Math.cos(angle) * 20;
       camera.position.z += Math.sin(angle) * 20;
     }
+    if (e.keyCode === 32) {
+      key.rotation.y += 10;
+    }
 
     pointLight.position.set(camera.position.x, camera.position.y, camera.position.z);
 
@@ -219,7 +235,11 @@
 
   const loop = () => {
     requestAnimationFrame(loop);
+    keys.forEach(key => {
+      key.rotation.y += 0.02;
+    });
     // editLightPower();
+    //key.rotation.y += 0.05;
     renderer.render(scene, camera);
   };
 
