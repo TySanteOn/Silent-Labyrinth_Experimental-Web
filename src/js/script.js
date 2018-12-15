@@ -1,4 +1,7 @@
+//import Key from "./classes/Key.js";
+
 {
+
   let loader,
     scene,
     WIDTH,
@@ -10,18 +13,61 @@
     aspectRatio,
     renderer,
     container,
-    pointLight;
+    pointLight,
+    hemisphereLight;
+
+  let enemy, door, key;
+
+  let getal1, getal2, getal3;
+
+  let keys = [];
+
+  const keyPositions = [
+    {
+      x: 350,
+      z: 130,
+      direction: 11
+    },
+    {
+      x: -80,
+      z: 2050,
+      direction: 22
+    },
+    {
+      x: -680,
+      z: 2340,
+      direction: 22
+    },
+    {
+      x: 1240,
+      z: 350,
+      direction: 11
+    },
+    {
+      x: 1080,
+      z: 2320,
+      direction: 22
+    },
+    {
+      x: 1450,
+      z: 880,
+      direction: 11
+    }
+  ];
 
 
   const init = () => {
     createScene();
     createCamera();
     loadMaze();
+    loadDoor();
+    loadEnemy();
+    getRandomNumbers();
+    createKeys();
 
     createPulseLight();
 
     getMicVolume();
-
     loop();
 
     document.addEventListener('keydown', handleKeyDown);
@@ -36,6 +82,7 @@
     pointLight.position.set(xPos, yPos, zPos);
     pointLight.castShadow = true;
     scene.add(pointLight);
+
   };
 
   const createCamera = () => {
@@ -52,11 +99,12 @@
       farPlane
     );
 
-    camera.position.x = 100;
-    camera.position.y = 160;
-    camera.position.z = 20;
+    camera.position.x = 230;
+    camera.position.y = 3000;
+    camera.position.z = 180;
+    camera.rotation.x = 300;
   }
-    
+
   const createScene = () => {
     WIDTH = window.innerWidth;
     HEIGHT = window.innerHeight;
@@ -70,7 +118,7 @@
       alpha: true,
       antialias: true
     });
-    
+
     renderer.setSize(WIDTH, HEIGHT);
     renderer.shadowMap.enabled = true;
 
@@ -78,16 +126,76 @@
     container.appendChild(renderer.domElement);
   };
 
-  const loop = () => {
-    requestAnimationFrame(loop);
-    editLightPower();
-    renderer.render(scene, camera);
-  };
-
   const loadMaze = () => {
     loader = new THREE.ObjectLoader();
-    loader.load('data/maze-floor.dae.json', object => {
+    loader.load('assets/data/maze02.dae.json', object => {
       scene.add(object);
+    });
+
+  };
+
+  const loadKey = (getal) => {
+    loader = new THREE.ObjectLoader();
+    loader.load('assets/data/key.dae.json', object => {
+      key = object;
+
+      key.scale.set(.1, .1, .1);
+      key.position.y = 180;
+      key.receiveShadow = true;
+      key.castShadow = true;
+
+      //links/rechts
+      key.position.x = keyPositions[getal].x;
+      key.position.z = keyPositions[getal].z;
+      key.rotation.y = keyPositions[getal].direction;
+
+      keys.push(key);
+      console.log(keys);
+      scene.add(key);
+    });
+  };
+
+  const createKeys = () => {
+    if (getal1 != getal2 && getal1 != getal3 && getal2 != getal3) {
+      const getallen = [getal1, getal2, getal3];
+      getallen.forEach(getal => {
+        loadKey(getal);
+      });
+    } else {
+      getRandomNumbers();
+      createKeys();
+    }
+  };
+
+  const getRandomNumbers = () => {
+    getal1 = Math.floor(Math.random() * 5);
+    getal2 = Math.floor(Math.random() * 5);
+    getal3 = Math.floor(Math.random() * 5);
+
+    console.log(getal1, getal2, getal3);
+  };
+
+  const loadDoor = () => {
+    loader = new THREE.ObjectLoader();
+    loader.load('assets/data/door.dae.json', object => {
+      door = object;
+
+      door.position.z = -998.3;
+      door.position.x = -800;
+
+      scene.add(door);
+    });
+  };
+
+  const loadEnemy = () => {
+    loader = new THREE.ObjectLoader();
+    loader.load('assets/data/enemy.dae.json', object => {
+      enemy = object;
+
+      enemy.scale.set(1.6, 1.6, 1.6);
+      enemy.position.y = 20;
+
+      scene.add(enemy);
     });
   };
 
@@ -111,6 +219,9 @@
       camera.position.x -= Math.cos(angle) * 20;
       camera.position.z += Math.sin(angle) * 20;
     }
+    if (e.keyCode === 32) {
+      key.rotation.y += 10;
+    }
 
     pointLight.position.set(camera.position.x, camera.position.y, camera.position.z);
 
@@ -122,6 +233,16 @@
       pointLight.power = volume * 40;
     }
   }
+
+  const loop = () => {
+    requestAnimationFrame(loop);
+    keys.forEach(key => {
+      key.rotation.y += 0.02;
+    });
+    editLightPower();
+    //key.rotation.y += 0.05;
+    renderer.render(scene, camera);
+  };
 
   init();
 }
