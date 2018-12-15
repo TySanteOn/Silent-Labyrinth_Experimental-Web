@@ -5,9 +5,9 @@ class Cube {
     const geom = new THREE.BoxGeometry(100, 100, 100, 5, 5, 5);
 
     const mat = new THREE.MeshPhongMaterial({
-      color: 0xffffff,
+      // color: 0xffffff,
       // wireframe: true,
-      flatShading: true,
+      // flatShading: true,
     });
 
       const m = new THREE.Mesh(geom, mat)
@@ -20,8 +20,8 @@ class Cube {
       const s = size;
       m.scale.set(s, s, s);
 
-      m.castShadow = true;
-      m.receiveShadow = true;
+      // m.castShadow = true;
+      // m.receiveShadow = true;
 
       this.mesh.add(m);
 

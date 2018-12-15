@@ -1,4 +1,7 @@
+
 //import Key from "./classes/Key.js";
+
+import Player from "./classes/Player.js"
 
 {
 
@@ -55,8 +58,16 @@
     }
   ];
 
+    player1,
+    playerX = 100,
+    playerY = 200,
+    playerZ = 20,
+    overview = false;
+
+
 
   const init = () => {
+    
     createScene();
     createCamera();
     loadMaze();
@@ -66,19 +77,43 @@
     createKeys();
 
     createPulseLight();
+    createPlayer();
 
     getMicVolume();
     loop();
 
-    document.addEventListener('keydown', handleKeyDown);
+    document.getElementById(`cameraFullMaze`).addEventListener('click', handleButtonClick);
+    document.addEventListener('keypress', handleKeyDown);
+  };
+
+  const handleButtonClick = () => {
+    overview = !overview;
+    if (overview) {
+      camera.position.set(500, 2500, 500);
+      camera.rotation.x = 300;
+      camera.rotation.y = 0;
+    }
+    if (!overview) {
+      camera.position.set(playerX, playerY, playerZ);
+      camera.rotation.x = 0;
+    }
+  };
+
+  const createPlayer = () => {
+    const x = 50;
+    const y = 200;
+    const z = 20;
+
+    player1 = new Player(x, y, z);
+    scene.add(player1.mesh);
   };
 
   const createPulseLight = () => {
-    const xPos = 0;
+    const xPos = 100;
     const yPos = 200;
-    const zPos = 0;
+    const zPos = 20;
 
-    pointLight = new THREE.PointLight(0xffffff, 1, 0, 2);
+    pointLight = new THREE.PointLight(0xffffff, 1, 1000, 2);
     pointLight.position.set(xPos, yPos, zPos);
     pointLight.castShadow = true;
     scene.add(pointLight);
@@ -99,10 +134,14 @@
       farPlane
     );
 
-    camera.position.x = 230;
-    camera.position.y = 3000;
-    camera.position.z = 180;
-    camera.rotation.x = 300;
+//     camera.position.x = 230;
+//     camera.position.y = 3000;
+//     camera.position.z = 180;
+//     camera.rotation.x = 300;
+    camera.position.x = 100;
+    camera.position.y = 200;
+    camera.position.z = 20;
+
   }
 
   const createScene = () => {
@@ -129,6 +168,10 @@
   const loadMaze = () => {
     loader = new THREE.ObjectLoader();
     loader.load('assets/data/maze02.dae.json', object => {
+      object.children.forEach(child => {
+        child.castShadow = true;
+        child.receiveShadow = true;
+      });
       scene.add(object);
     });
 
@@ -177,6 +220,7 @@
 
   const loadDoor = () => {
     loader = new THREE.ObjectLoader();
+
     loader.load('assets/data/door.dae.json', object => {
       door = object;
 
@@ -203,27 +247,41 @@
     let vector;
     vector = camera.getWorldDirection(vector);
     const angle = Math.atan2(vector.z, vector.x) * -1;
-    console.log(angle);
 
-    if (e.keyCode === 37) {
-      camera.rotation.y += 10 * Math.PI / 180;
+    checkForHitCollision();
+    
+    switch (e.keyCode) {
+      case 37:
+        camera.rotation.y += (10 * Math.PI) / 180;
+        break;
+      case 39:
+        camera.rotation.y -= (10 * Math.PI) / 180;
+        break;
+      case 38:
+        playerX += Math.cos(angle) * 20;
+        playerZ -= Math.sin(angle) * 20;
+        break;
+      case 40:
+        playerX -= Math.cos(angle) * 20;
+        playerZ += Math.sin(angle) * 20;
+        break;
     }
-    if (e.keyCode === 39) {
-      camera.rotation.y -= 10 * Math.PI / 180;
+
+    if (overview) {
+      camera.position.set(500, 2500, 500);
+      camera.rotation.x = 300;
     }
-    if (e.keyCode === 38) {
-      camera.position.x += Math.cos(angle) * 20;
-      camera.position.z -= Math.sin(angle) * 20;
-    }
-    if (e.keyCode === 40) {
-      camera.position.x -= Math.cos(angle) * 20;
-      camera.position.z += Math.sin(angle) * 20;
+    if (!overview) {
+      camera.position.set(playerX, playerY, playerZ);
+      camera.rotation.x = 0;
     }
     if (e.keyCode === 32) {
       key.rotation.y += 10;
     }
 
-    pointLight.position.set(camera.position.x, camera.position.y, camera.position.z);
+    pointLight.position.set(playerX, playerY, playerZ);
+    player1.mesh.position.set(playerX - 50, playerY, playerZ);
+    
 
     renderer.render(scene, camera);
   }
@@ -234,6 +292,7 @@
     }
   }
 
+
   const loop = () => {
     requestAnimationFrame(loop);
     keys.forEach(key => {
@@ -243,6 +302,23 @@
     //key.rotation.y += 0.05;
     renderer.render(scene, camera);
   };
+
+  const checkForHitCollision = () => {
+    //console.log(scene);
+    // for (let i = 0; i < player1.mesh.children[0].geometry.vertices.length; i++) {
+    //   const raycaster = new THREE.Raycaster();
+    //   raycaster.set(player1.mesh.position, player1.mesh.children[0].geometry.vertices[i]);
+    //   // console.log(raycaster);
+      
+    //   let intersects = raycaster.intersectObjects(scene.children[2].children);
+    //   if (intersects.length !== 0) {
+    //     console.log(intersects);
+
+    //   }
+    // }
+    
+  }
+
 
   init();
 }
