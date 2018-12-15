@@ -135,14 +135,9 @@ import Enemy from "./classes/Enemy.js";
       farPlane
     );
 
-//     camera.position.x = 230;
-//     camera.position.y = 3000;
-//     camera.position.z = 180;
-//     camera.rotation.x = 300;
     camera.position.x = 100;
     camera.position.y = 180;
     camera.position.z = 20;
-
   }
 
   const createScene = () => {
@@ -182,7 +177,7 @@ import Enemy from "./classes/Enemy.js";
     loader = new THREE.ObjectLoader();
     loader.load('assets/data/key.dae.json', object => {
       key = object;
-
+      key.name = getal;
       key.scale.set(.1, .1, .1);
       key.position.y = 180;
       key.receiveShadow = true;
@@ -193,9 +188,15 @@ import Enemy from "./classes/Enemy.js";
       key.position.z = keyPositions[getal].z;
       key.rotation.y = keyPositions[getal].direction;
 
+      const pointLightKey = new THREE.PointLight(0xffffff, 1, 200);
+      pointLightKey.position.set(key.position.x, key.position.y, key.position.z);
+      pointLightKey.castShadow = true;
+
       keys.push(key);
-      console.log(keys);
-      scene.add(key);
+      console.log(scene);
+      keys.forEach(key => {
+        scene.add(key, pointLightKey);
+      });
     });
   };
 
@@ -242,20 +243,19 @@ import Enemy from "./classes/Enemy.js";
     vector = camera.getWorldDirection(vector);
     const angle = Math.atan2(vector.z, vector.x) * -1;
 
-    checkForHitCollision();
     
-    switch (e.keyCode) {
-      case 37:
+    switch (e.key) {
+      case 'ArrowLeft':
         camera.rotation.y += (10 * Math.PI) / 180;
         break;
-      case 39:
+      case 'ArrowRight':
         camera.rotation.y -= (10 * Math.PI) / 180;
         break;
-      case 38:
+      case 'ArrowUp':
         playerX += Math.cos(angle) * 20;
         playerZ -= Math.sin(angle) * 20;
         break;
-      case 40:
+      case 'ArrowDown':
         playerX -= Math.cos(angle) * 20;
         playerZ += Math.sin(angle) * 20;
         break;
@@ -269,8 +269,8 @@ import Enemy from "./classes/Enemy.js";
       camera.position.set(playerX, playerY, playerZ);
       camera.rotation.x = 0;
     }
-    if (e.keyCode === 32) {
-      key.rotation.y += 10;
+    if (e.key === 'Space') {
+
     }
 
     pointLight.position.set(playerX, playerY, playerZ);
@@ -287,32 +287,23 @@ import Enemy from "./classes/Enemy.js";
   }
 
 
+  const checkKeyCameraPos = () => {
+    // if (keys[0].position.x === camera.position.x && keys[0].position.z === camera.position.z) {
+    //   scene.remove(scene.children);
+    // };
+  }
+
   const loop = () => {
     requestAnimationFrame(loop);
     keys.forEach(key => {
       key.rotation.y += 0.02;
     });
+
+    checkKeyCameraPos();
     editLightPower();
     //key.rotation.y += 0.05;
     renderer.render(scene, camera);
   };
-
-  const checkForHitCollision = () => {
-    //console.log(scene);
-    // for (let i = 0; i < player1.mesh.children[0].geometry.vertices.length; i++) {
-    //   const raycaster = new THREE.Raycaster();
-    //   raycaster.set(player1.mesh.position, player1.mesh.children[0].geometry.vertices[i]);
-    //   // console.log(raycaster);
-      
-    //   let intersects = raycaster.intersectObjects(scene.children[2].children);
-    //   if (intersects.length !== 0) {
-    //     console.log(intersects);
-
-    //   }
-    // }
-    
-  }
-
 
   init();
 }
