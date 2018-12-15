@@ -20,6 +20,7 @@ import Player from "./classes/Player.js"
 
 
   const init = () => {
+    
     createScene();
     createCamera();
     loadMaze();
@@ -62,7 +63,7 @@ import Player from "./classes/Player.js"
     const yPos = 200;
     const zPos = 20;
 
-    pointLight = new THREE.PointLight(0xffffff, 1, 1000, 4);
+    pointLight = new THREE.PointLight(0xffffff, 1, 1000, 2);
     pointLight.position.set(xPos, yPos, zPos);
     pointLight.castShadow = true;
     scene.add(pointLight);
@@ -118,20 +119,10 @@ import Player from "./classes/Player.js"
   const loadMaze = () => {
     loader = new THREE.ObjectLoader();
     loader.load('data/maze-floor.dae.json', object => {
-      console.log(object);
       object.children.forEach(child => {
         child.castShadow = true;
         child.receiveShadow = true;
       });
-      // object.traverse(child => {
-      //       if (child instanceof THREE.Mesh) {
-      //         child.castShadow = true;
-      //         child.receiveShadow = true;
-      //       }
-      //     });
-      // daemesh = object.children[0].children[0];
-      // daemesh.castShadow = true;
-      // daemesh.receiveShadow = true;
       scene.add(object);
     });
   };
@@ -140,6 +131,8 @@ import Player from "./classes/Player.js"
     let vector;
     vector = camera.getWorldDirection(vector);
     const angle = Math.atan2(vector.z, vector.x) * -1;
+
+    checkForHitCollision();
     
     switch (e.keyCode) {
       case 37:
@@ -178,6 +171,22 @@ import Player from "./classes/Player.js"
     if (micIsOn){
       pointLight.power = volume * 40;
     }
+  }
+
+  const checkForHitCollision = () => {
+    //console.log(scene);
+    // for (let i = 0; i < player1.mesh.children[0].geometry.vertices.length; i++) {
+    //   const raycaster = new THREE.Raycaster();
+    //   raycaster.set(player1.mesh.position, player1.mesh.children[0].geometry.vertices[i]);
+    //   // console.log(raycaster);
+      
+    //   let intersects = raycaster.intersectObjects(scene.children[2].children);
+    //   if (intersects.length !== 0) {
+    //     console.log(intersects);
+
+    //   }
+    // }
+    
   }
 
   init();
