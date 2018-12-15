@@ -130,14 +130,9 @@ import Player from "./classes/Player.js"
       farPlane
     );
 
-//     camera.position.x = 230;
-//     camera.position.y = 3000;
-//     camera.position.z = 180;
-//     camera.rotation.x = 300;
     camera.position.x = 100;
     camera.position.y = 200;
     camera.position.z = 20;
-
   }
 
   const createScene = () => {
@@ -177,7 +172,7 @@ import Player from "./classes/Player.js"
     loader = new THREE.ObjectLoader();
     loader.load('assets/data/key.dae.json', object => {
       key = object;
-
+      key.name = getal;
       key.scale.set(.1, .1, .1);
       key.position.y = 180;
       key.receiveShadow = true;
@@ -188,9 +183,15 @@ import Player from "./classes/Player.js"
       key.position.z = keyPositions[getal].z;
       key.rotation.y = keyPositions[getal].direction;
 
+      const pointLightKey = new THREE.PointLight(0xffffff, 1, 200);
+      pointLightKey.position.set(key.position.x, key.position.y, key.position.z);
+      pointLightKey.castShadow = true;
+
       keys.push(key);
-      console.log(keys);
-      scene.add(key);
+      console.log(scene);
+      keys.forEach(key => {
+        scene.add(key, pointLightKey);
+      });
     });
   };
 
@@ -272,7 +273,7 @@ import Player from "./classes/Player.js"
       camera.rotation.x = 0;
     }
     if (e.keyCode === 32) {
-      key.rotation.y += 10;
+
     }
 
     pointLight.position.set(playerX, playerY, playerZ);
@@ -289,11 +290,19 @@ import Player from "./classes/Player.js"
   }
 
 
+  const checkKeyCameraPos = () => {
+    // if (keys[0].position.x === camera.position.x && keys[0].position.z === camera.position.z) {
+    //   scene.remove(scene.children);
+    // };
+  }
+
   const loop = () => {
     requestAnimationFrame(loop);
     keys.forEach(key => {
       key.rotation.y += 0.02;
     });
+
+    checkKeyCameraPos();
     editLightPower();
     //key.rotation.y += 0.05;
     renderer.render(scene, camera);
@@ -314,7 +323,6 @@ import Player from "./classes/Player.js"
     // }
     
   }
-
 
   init();
 }
