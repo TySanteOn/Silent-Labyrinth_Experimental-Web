@@ -17,7 +17,11 @@ import Player from "./classes/Player.js"
     renderer,
     container,
     pointLight,
-    hemisphereLight;
+    player1,
+    playerX = 100,
+    playerY = 200,
+    playerZ = 20,
+    overview = false;
 
   let enemy, door, key;
 
@@ -57,14 +61,6 @@ import Player from "./classes/Player.js"
       direction: 11
     }
   ];
-
-    player1,
-    playerX = 100,
-    playerY = 200,
-    playerZ = 20,
-    overview = false;
-
-
 
   const init = () => {
     
