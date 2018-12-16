@@ -24,7 +24,10 @@ import Key from "./classes/Key.js";
 
   let score = 0;
 
+  const start = Date.now();
+
   const $startscreen = document.querySelector(`.startscreen`);
+  const $endscreen = document.querySelector(`.endscreen`);
 
 
   const keyPositions = [
@@ -104,9 +107,9 @@ import Key from "./classes/Key.js";
       farPlane
     );
 
-    camera.position.x = 350;
+    camera.position.x = -900;
     camera.position.y = 150;
-    camera.position.z = 300;
+    camera.position.z = -800;
     //camera.rotation.x = 300;
   }
 
@@ -268,7 +271,8 @@ import Key from "./classes/Key.js";
       removeKey();
     }
     if (e.keyCode === 32) {
-      $startscreen.classList.add(`hide`);
+      $startscreen.classList.toggle(`hide`);
+      $endscreen.classList.toggle(`hide`);
     }
     if (e.keyCode === 13) {
       //removeKey();
@@ -278,28 +282,31 @@ import Key from "./classes/Key.js";
     pointLight.position.set(camera.position.x, camera.position.y, camera.position.z);
 
     renderer.render(scene, camera);
-  }
+  };
 
   const editLightPower = () => {
     if (micIsOn) {
       pointLight.power = volume * 20;
     }
-  }
+  };
 
-  const checkKeyCameraPos = () => {
-    // if (keys[0].position.x === camera.position.x && keys[0].position.z === camera.position.z) {
-    //   scene.remove(scene.children);
-    // };
-  }
+  const showWinscreen = () => {
+    if (camera.position.z < -950) {
+      const title = document.getElementById(`endscreen-title`);
+      title.textContent = `You got out!`;
+      const text = document.getElementById(`endscreen-text`);
+      text.textContent = `Thanks for playing! Want to play again? Press the SPACEBAR!`;
+      $endscreen.classList.remove(`hide`);
+    }
+  };
 
   const loop = () => {
     requestAnimationFrame(loop);
     keys.forEach(key => {
       key.rotation.y += 0.02;
     });
-    checkKeyCameraPos();
     editLightPower();
-    //key.rotation.y += 0.05;
+    showWinscreen();
     renderer.render(scene, camera);
   };
 

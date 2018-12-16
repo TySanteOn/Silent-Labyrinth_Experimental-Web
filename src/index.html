@@ -32,28 +32,24 @@
       height: 100vh;
       position: fixed;
       z-index: 999;
-      transition: opacity 1s ease-in-out;
+      transition: opacity-down 1s ease-in-out;
       opacity: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
-    @keyframes opacity {
+    @keyframes opacity-down {
       from {
-        opacity: 1;
+        opacity: .6;
       }
 
       to {
-        opacity: .6;
+        opacity: 1;
       }
     }
 
-    .hide {
-      opacity: 0;
-    }
-
-    h1{
+    .title{
       color:maroon;
       font-weight: 400;
       font-size: 5rem;
@@ -62,13 +58,13 @@
 
     p{
       color: white;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       text-align: center;
     }
 
     .image{
-      height: 50%;
-      width: 50%;
+      height: 40%;
+      width: 40%;
       margin-bottom: 2rem;
     }
 
@@ -86,7 +82,7 @@
 
     .step {
       width: 20rem;
-      margin: 2rem;
+      margin: 0 2rem 2rem 2rem;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -124,13 +120,40 @@
       display: flex;
       width: 20rem;
     }
+
+    .endscreen {
+      background-color: black;
+      width: 100vw;
+      height: 100vh;
+      position: fixed;
+      z-index: 990;
+      transition: opacity-up 1s ease-in-out;
+      opacity: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @keyframes opacity-up {
+      from {
+        opacity: 1;
+      }
+
+      to {
+        opacity: .6;
+      }
+    }
+    .hide {
+      opacity: 0;
+    }
   </style>
 </head>
 
 <body>
   <div>
     <div class="startscreen">
-      <h1>Silent Labrinth</h1>
+      <h1 class="title">Silent Labrinth</h1>
       <p>You wake up in a maze, completely in the dark and alone...at least you hope so.</p>
 
       <div class="steps">
@@ -156,12 +179,19 @@
           to start the game</p>
       </div>
     </div>
+
+    <div class="endscreen">
+      <h2 class="title" id="endscreen-title"></h2>
+      <p id="endscreen-text"></p>
+    </div>
+
     <div class="progress">
-      <p class="time">00:00:00</p>
+      <p class="time"></p>
       <div class="collected-keys">
         <p>Keys collected:</p>
       </div>
     </div>
+
     <div id="world"></div>
   </div>
 
