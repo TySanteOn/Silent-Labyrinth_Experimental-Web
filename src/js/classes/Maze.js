@@ -3,7 +3,7 @@ class Maze {
         this.boxes = [];
 
         const loader = new THREE.ObjectLoader();
-        loader.load('assets/data/maze02.dae.json', object => {
+        loader.load('assets/data/maze.dae.json', object => {
             object.children.forEach((child, index) => {
                 child.castShadow = true;
                 child.receiveShadow = true;
