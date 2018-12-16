@@ -26,7 +26,7 @@ const getMicVolume = () => {
 }
 
 const onMicrophoneDenied = () => {
-  alert('Stream generation failed.');
+  alert("This experience sucks without your microphone...");
 }
 
 var mediaStreamSource = null;

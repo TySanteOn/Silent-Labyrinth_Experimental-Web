@@ -1,8 +1,10 @@
 
-//import Key from "./classes/Key.js";
-
+import Key from "./classes/Key.js";
 import Player from "./classes/Player.js"
 import Enemy from "./classes/Enemy.js";
+import Door from "./classes/Door.js";
+import Maze from "./classes/Maze.js";
+import EntityLight from "./classes/EntityLight.js";
 
 {
 
@@ -17,15 +19,17 @@ import Enemy from "./classes/Enemy.js";
     aspectRatio,
     renderer,
     container,
-    pointLight,
-    hemisphereLight,
+    playerLight,
     player1,
     playerX = 100,
     playerY = 200,
     playerZ = 20,
-    overview = false;
+    overview = false,
+    box;
 
-  let enemy, door, key;
+  let hemiLight;
+
+  let enemy, door, key, maze;
 
   let getal1, getal2, getal3;
 
@@ -65,32 +69,26 @@ import Enemy from "./classes/Enemy.js";
   ];
 
   const init = () => {
-    
     createScene();
     createCamera();
-    loadMaze();
-    loadDoor();
-    loadEnemy();
     getRandomNumbers();
-    createKeys();
 
-    createPulseLight();
-    createPlayer();
+    hemiLight = new THREE.HemisphereLight(0xffffff);
+    scene.add(hemiLight);
+
+    createEntities();
 
     getMicVolume();
     loop();
 
-    hemisphereLight = new THREE.HemisphereLight(0xffffff, 1);
-    scene.add(hemisphereLight);
-
     document.getElementById(`cameraFullMaze`).addEventListener('click', handleButtonClick);
-    document.addEventListener('keypress', handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown);
   };
 
   const handleButtonClick = () => {
     overview = !overview;
     if (overview) {
-      camera.position.set(700, 3000, 700);
+      camera.position.set(700, 3500, 700);
       camera.rotation.x = 300;
       camera.rotation.y = 0;
     }
@@ -100,26 +98,43 @@ import Enemy from "./classes/Enemy.js";
     }
   };
 
-  const createPlayer = () => {
-    const x = 50;
-    const y = 180;
-    const z = 20;
+  const createEntities = () => {
+    //Maze
+    maze = new Maze(scene);
 
-    player1 = new Player(x, y, z);
+    //Door
+    door = new Door(scene);
+
+    // Player
+    const playerStartX = 50;
+    const playerStartY = 180;
+    const playerStartZ = 20;
+
+    player1 = new Player(playerStartX, playerStartY, playerStartZ);
     scene.add(player1.mesh);
-  };
 
-  const createPulseLight = () => {
-    const xPos = 100;
-    const yPos = 180;
-    const zPos = 20;
+    playerLight = new EntityLight(playerStartX, playerStartY, playerStartZ, 0xffffff)
+    scene.add(playerLight.light);
 
-    pointLight = new THREE.PointLight(0xffffff, 1, 1000, 2);
-    pointLight.position.set(xPos, yPos, zPos);
-    pointLight.castShadow = true;
-    scene.add(pointLight);
+    // Keys
+    createKeys();
+
+    //Enemy
+    enemy = new Enemy(scene);
 
   };
+
+  const createKeys = () => {
+    if (getal1 != getal2 && getal1 != getal3 && getal2 != getal3) {
+      const getallen = [getal1, getal2, getal3];
+      getallen.forEach(getal => {
+        new Key(getal, scene, keys, keyPositions);
+      });
+    } else {
+      getRandomNumbers();
+      createKeys();
+    }
+  }
 
   const createCamera = () => {
 
@@ -161,86 +176,17 @@ import Enemy from "./classes/Enemy.js";
     container.appendChild(renderer.domElement);
   };
 
-  const loadMaze = () => {
-    loader = new THREE.ObjectLoader();
-    loader.load('assets/data/maze02.dae.json', object => {
-      object.children.forEach(child => {
-        child.castShadow = true;
-        child.receiveShadow = true;
-      });
-      scene.add(object);
-    });
-
-  };
-
-  const loadKey = (getal) => {
-    loader = new THREE.ObjectLoader();
-    loader.load('assets/data/key.dae.json', object => {
-      key = object;
-      key.name = getal;
-      key.scale.set(.1, .1, .1);
-      key.position.y = 180;
-      key.receiveShadow = true;
-      key.castShadow = true;
-
-      //links/rechts
-      key.position.x = keyPositions[getal].x;
-      key.position.z = keyPositions[getal].z;
-      key.rotation.y = keyPositions[getal].direction;
-
-      const pointLightKey = new THREE.PointLight(0xffffff, 1, 200);
-      pointLightKey.position.set(key.position.x, key.position.y, key.position.z);
-      pointLightKey.castShadow = true;
-
-      keys.push(key);
-      console.log(scene);
-      keys.forEach(key => {
-        scene.add(key, pointLightKey);
-      });
-    });
-  };
-
-  const createKeys = () => {
-    if (getal1 != getal2 && getal1 != getal3 && getal2 != getal3) {
-      const getallen = [getal1, getal2, getal3];
-      getallen.forEach(getal => {
-        loadKey(getal);
-      });
-    } else {
-      getRandomNumbers();
-      createKeys();
-    }
-  };
-
   const getRandomNumbers = () => {
     getal1 = Math.floor(Math.random() * 5);
     getal2 = Math.floor(Math.random() * 5);
     getal3 = Math.floor(Math.random() * 5);
 
-    console.log(getal1, getal2, getal3);
-  };
-
-  const loadDoor = () => {
-    loader = new THREE.ObjectLoader();
-
-    loader.load('assets/data/door.dae.json', object => {
-      door = object;
-
-      door.position.z = -998.3;
-      door.position.x = -800;
-
-      scene.add(door);
-    });
-  };
-
-  const loadEnemy = () => {
-    enemy = new Enemy();
-    scene.add(enemy.enemy);
   };
 
   const handleKeyDown = e => {
-    let vector;
-    vector = camera.getWorldDirection(vector);
+    checkTestPathFinder();
+    let vector = new THREE.Vector3();
+    camera.getWorldDirection(vector);
     const angle = Math.atan2(vector.z, vector.x) * -1;
 
     
@@ -262,36 +208,51 @@ import Enemy from "./classes/Enemy.js";
     }
 
     if (overview) {
-      camera.position.set(500, 2500, 500);
+      camera.position.set(700, 3500, 700);
       camera.rotation.x = 300;
     }
     if (!overview) {
       camera.position.set(playerX, playerY, playerZ);
       camera.rotation.x = 0;
     }
-    if (e.key === 'Space') {
 
-    }
-
-    pointLight.position.set(playerX, playerY, playerZ);
+    playerLight.light.position.set(playerX, playerY, playerZ);
     player1.mesh.position.set(playerX - 50, playerY, playerZ);
     
-
+    // console.log(player1.mesh.position);
+    
     renderer.render(scene, camera);
   }
 
   const editLightPower = () => {
     if (micIsOn){
-      pointLight.power = volume * 40;
+      playerLight.light.power = volume * 60;
+
+      // 18 is al luid
     }
   }
 
-
-  const checkKeyCameraPos = () => {
-    // if (keys[0].position.x === camera.position.x && keys[0].position.z === camera.position.z) {
-    //   scene.remove(scene.children);
-    // };
-  }
+  const checkTestPathFinder = () => {
+    
+      // console.log(maze.boxes);
+      // if (player1.mesh.position.x == pathFindObject.children[200].position.x && player1.mesh.position.z == pathFindObject.children[200].position.z) {
+      //   console.log(player1.mesh.position, pathFindObject.children[200].position);
+      // }
+      maze.boxes.forEach(box => {
+        if (50 > box.distanceToPoint(player1.mesh.position) > 0) {
+          console.log("box: ", box);
+          const helper = new THREE.Box3Helper(box, 0xffffff);
+          scene.remove(scene.children[14]);
+          scene.add(helper);
+          console.log("distance: ", box.distanceToPoint(player1.mesh.position));
+        }
+        // const greatWall = scene.getObjectByName('wall 0');
+        // scene.remove(greatWall);
+      });
+    
+    // scene.remove(selectedObject);
+    
+  };
 
   const loop = () => {
     requestAnimationFrame(loop);
@@ -299,9 +260,8 @@ import Enemy from "./classes/Enemy.js";
       key.rotation.y += 0.02;
     });
 
-    checkKeyCameraPos();
     editLightPower();
-    //key.rotation.y += 0.05;
+
     renderer.render(scene, camera);
   };
 
