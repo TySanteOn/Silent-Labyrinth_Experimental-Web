@@ -83,7 +83,7 @@ import EntityLight from "./classes/EntityLight.js";
     getRandomNumbers();
 
     hemiLight = new THREE.HemisphereLight(0xffffff);
-    scene.add(hemiLight);
+    // scene.add(hemiLight);
 
     createEntities();
 
@@ -274,7 +274,7 @@ import EntityLight from "./classes/EntityLight.js";
   };
 
   const editLightPower = () => {
-    if (micIsOn){
+    if (micIsOn) {
       playerLight.light.power = volume * 60;
 
       // 18 is al luid
@@ -282,23 +282,23 @@ import EntityLight from "./classes/EntityLight.js";
   }
 
   const checkTestPathFinder = () => {
-    
-      // console.log(maze.boxes);
-      // if (player1.mesh.position.x == pathFindObject.children[200].position.x && player1.mesh.position.z == pathFindObject.children[200].position.z) {
-      //   console.log(player1.mesh.position, pathFindObject.children[200].position);
-      // }
-      maze.boxes.forEach(box => {
-        if (50 > box.distanceToPoint(player1.mesh.position) > 0) {
-          console.log("box: ", box);
-          const helper = new THREE.Box3Helper(box, 0xffffff);
-          scene.remove(scene.children[14]);
-          scene.add(helper);
-          console.log("distance: ", box.distanceToPoint(player1.mesh.position));
-        }
-        // const greatWall = scene.getObjectByName('wall 0');
-        // scene.remove(greatWall);
-      });
-    
+
+    // console.log(maze.boxes);
+    // if (player1.mesh.position.x == pathFindObject.children[200].position.x && player1.mesh.position.z == pathFindObject.children[200].position.z) {
+    //   console.log(player1.mesh.position, pathFindObject.children[200].position);
+    // }
+    maze.boxes.forEach(box => {
+      if (50 > box.distanceToPoint(player1.mesh.position) > 0) {
+        console.log("box: ", box);
+        const helper = new THREE.Box3Helper(box, 0xffffff);
+        scene.remove(scene.children[14]);
+        scene.add(helper);
+        console.log("distance: ", box.distanceToPoint(player1.mesh.position));
+      }
+      // const greatWall = scene.getObjectByName('wall 0');
+      // scene.remove(greatWall);
+    });
+
     // scene.remove(selectedObject);
   };
 
