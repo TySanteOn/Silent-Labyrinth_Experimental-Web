@@ -22,6 +22,8 @@ import Key from "./classes/Key.js";
 
   let keys = [];
 
+  let score = 0;
+
   const $startscreen = document.querySelector(`.startscreen`);
 
 
@@ -104,7 +106,7 @@ import Key from "./classes/Key.js";
 
     camera.position.x = 350;
     camera.position.y = 150;
-    camera.position.z = 130;
+    camera.position.z = 300;
     //camera.rotation.x = 300;
   }
 
@@ -136,11 +138,46 @@ import Key from "./classes/Key.js";
     });
   };
 
+  const addKeyToProgress = () => {
+    if (score < 3) {
+      score += 1;
+      const collectedKeys = document.querySelector(`.collected-keys`);
+      const img = document.createElement("img");
+      img.classList.add(`image-progress`);
+      img.src = `assets/img/key.png`;
+      img.width = 430;
+      img.height = 291;
+      collectedKeys.appendChild(img);
+    }
+  };
+
+  const removeKey = () => {
+    const key1 = scene.getObjectByName(`${getal1}`);
+    const key2 = scene.getObjectByName(`${getal2}`);
+    const key3 = scene.getObjectByName(`${getal3}`);
+    //console.log(key1, key2, key3);
+    console.log(key1.position.z);
+    console.log(key1.position.z + 10);
+    console.log(camera.position.z);
+
+    if (key1.position.z - 10 >= camera.position.z && key1.position.z + 10 <= camera.position.z) {
+      scene.remove(key1);
+    }
+    if (key2.position.x === camera.position.x && key2.position.z === camera.position.z) {
+      scene.remove(key2);
+    }
+    if (key3.position.x === camera.position.x && key3.position.z === camera.position.z) {
+      scene.remove(key3);
+    }
+    //scene.remove(selectedKey);
+    //console.log(keys);
+  };
+
   const loadKey = (getal) => {
     loader = new THREE.ObjectLoader();
     loader.load('assets/data/key.dae.json', object => {
       key = object;
-      key.name = getal;
+      key.name = `${getal}`;
       key.scale.set(.1, .1, .1);
       key.position.y = 180;
       key.receiveShadow = true;
@@ -156,7 +193,6 @@ import Key from "./classes/Key.js";
       pointLightKey.castShadow = true;
 
       keys.push(key);
-      console.log(scene);
       keys.forEach(key => {
         scene.add(key, pointLightKey);
       });
@@ -173,6 +209,8 @@ import Key from "./classes/Key.js";
       getRandomNumbers();
       createKeys();
     }
+    console.log(scene);
+    console.log(keys);
   };
 
   const getRandomNumbers = () => {
@@ -222,13 +260,19 @@ import Key from "./classes/Key.js";
     if (e.keyCode === 38) {
       camera.position.x += Math.cos(angle) * 20;
       camera.position.z -= Math.sin(angle) * 20;
+      removeKey();
     }
     if (e.keyCode === 40) {
       camera.position.x -= Math.cos(angle) * 20;
       camera.position.z += Math.sin(angle) * 20;
+      removeKey();
     }
     if (e.keyCode === 32) {
       $startscreen.classList.add(`hide`);
+    }
+    if (e.keyCode === 13) {
+      //removeKey();
+      addKeyToProgress();
     }
 
     pointLight.position.set(camera.position.x, camera.position.y, camera.position.z);

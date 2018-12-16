@@ -103,6 +103,27 @@
     .red {
       color: maroon;
     }
+
+    .progress {
+      position: fixed;
+      z-index: 99;
+      display: flex;
+      justify-content: space-between;
+      width: 95%;
+      margin: 2rem;
+      opacity: .4;
+    }
+
+    .image-progress {
+      height: 2rem;
+      width: auto;
+      margin-left: 1rem;
+    }
+
+    .collected-keys {
+      display: flex;
+      width: 20rem;
+    }
   </style>
 </head>
 
@@ -133,6 +154,12 @@
         <img class="enemy" src="assets/img/controls.png" alt="controls" width="373" height="236">
         <p>Use the <span class="red">UP, DOWN, LEFT and RIGHT</span> keys to move around, hit the <span class="red">SPACEBAR</span>
           to start the game</p>
+      </div>
+    </div>
+    <div class="progress">
+      <p class="time">00:00:00</p>
+      <div class="collected-keys">
+        <p>Keys collected:</p>
       </div>
     </div>
     <div id="world"></div>
