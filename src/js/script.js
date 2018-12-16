@@ -22,6 +22,9 @@ import Key from "./classes/Key.js";
 
   let keys = [];
 
+  const $startscreen = document.querySelector(`.startscreen`);
+
+
   const keyPositions = [
     {
       x: 350,
@@ -225,7 +228,7 @@ import Key from "./classes/Key.js";
       camera.position.z += Math.sin(angle) * 20;
     }
     if (e.keyCode === 32) {
-
+      $startscreen.classList.add(`hide`);
     }
 
     pointLight.position.set(camera.position.x, camera.position.y, camera.position.z);
