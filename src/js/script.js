@@ -35,6 +35,14 @@ import EntityLight from "./classes/EntityLight.js";
 
   let keys = [];
 
+  let score = 0;
+
+  const start = Date.now();
+
+  const $startscreen = document.querySelector(`.startscreen`);
+  const $endscreen = document.querySelector(`.endscreen`);
+
+
   const keyPositions = [
     {
       x: 350,
@@ -69,6 +77,7 @@ import EntityLight from "./classes/EntityLight.js";
   ];
 
   const init = () => {
+
     createScene();
     createCamera();
     getRandomNumbers();
@@ -176,6 +185,41 @@ import EntityLight from "./classes/EntityLight.js";
     container.appendChild(renderer.domElement);
   };
 
+  const addKeyToProgress = () => {
+    if (score < 3) {
+      score += 1;
+      const collectedKeys = document.querySelector(`.collected-keys`);
+      const img = document.createElement("img");
+      img.classList.add(`image-progress`);
+      img.src = `assets/img/key.png`;
+      img.width = 430;
+      img.height = 291;
+      collectedKeys.appendChild(img);
+    }
+  };
+
+  const removeKey = () => {
+    const key1 = scene.getObjectByName(`${getal1}`);
+    const key2 = scene.getObjectByName(`${getal2}`);
+    const key3 = scene.getObjectByName(`${getal3}`);
+    //console.log(key1, key2, key3);
+    console.log(key1.position.z);
+    console.log(key1.position.z + 10);
+    console.log(camera.position.z);
+
+    if (key1.position.z - 10 >= camera.position.z && key1.position.z + 10 <= camera.position.z) {
+      scene.remove(key1);
+    }
+    if (key2.position.x === camera.position.x && key2.position.z === camera.position.z) {
+      scene.remove(key2);
+    }
+    if (key3.position.x === camera.position.x && key3.position.z === camera.position.z) {
+      scene.remove(key3);
+    }
+    //scene.remove(selectedKey);
+    //console.log(keys);
+  };
+
   const getRandomNumbers = () => {
     getal1 = Math.floor(Math.random() * 5);
     getal2 = Math.floor(Math.random() * 5);
@@ -188,7 +232,7 @@ import EntityLight from "./classes/EntityLight.js";
     let vector = new THREE.Vector3();
     camera.getWorldDirection(vector);
     const angle = Math.atan2(vector.z, vector.x) * -1;
-    
+
     switch (e.code) {
       case 'ArrowLeft':
         camera.rotation.y += (10 * Math.PI) / 180;
@@ -204,6 +248,13 @@ import EntityLight from "./classes/EntityLight.js";
         playerX -= Math.cos(angle) * 20;
         playerZ += Math.sin(angle) * 20;
         break;
+      case 'Enter':
+        addKeyToProgress();
+        break;
+      case 'Space':
+        $startscreen.classList.toggle(`hide`);
+        $endscreen.classList.toggle(`hide`);
+        break;
     }
 
     if (overview) {
@@ -217,11 +268,10 @@ import EntityLight from "./classes/EntityLight.js";
 
     playerLight.light.position.set(playerX, playerY, playerZ);
     player1.mesh.position.set(playerX - 50, playerY, playerZ);
-    
-    // console.log(player1.mesh.position);
-    
+
+
     renderer.render(scene, camera);
-  }
+  };
 
   const editLightPower = () => {
     if (micIsOn){
@@ -250,7 +300,16 @@ import EntityLight from "./classes/EntityLight.js";
       });
     
     // scene.remove(selectedObject);
-    
+  };
+
+  const showWinscreen = () => {
+    if (camera.position.z < -950) {
+      const title = document.getElementById(`endscreen-title`);
+      title.textContent = `You got out!`;
+      const text = document.getElementById(`endscreen-text`);
+      text.textContent = `Thanks for playing! Want to play again? Press the SPACEBAR!`;
+      $endscreen.classList.remove(`hide`);
+    }
   };
 
   const loop = () => {
@@ -258,9 +317,8 @@ import EntityLight from "./classes/EntityLight.js";
     keys.forEach(key => {
       key.rotation.y += 0.02;
     });
-
     editLightPower();
-
+    showWinscreen();
     renderer.render(scene, camera);
   };
 
