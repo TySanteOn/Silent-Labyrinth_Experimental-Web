@@ -309,7 +309,7 @@ import Player from "./classes/Player.js"
         break;
       case 'Space':
         $startscreen.classList.toggle(`hide`);
-        $endscreen.classList.toggle(`hide`);
+        $endscreen.classList.add(`hide`);
         break;
     }
 
