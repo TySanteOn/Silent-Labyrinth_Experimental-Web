@@ -8,9 +8,15 @@
   <title>Experimental Web</title>
 
   <style>
-    body {
+    * {
+      border: 0;
       margin: 0;
     }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
     #world {
       position: absolute;
       width: 100%;
@@ -24,12 +30,173 @@
       top: 10px;
       left: 10px;
     }
+
+    .startscreen {
+      background-color: black;
+      width: 100vw;
+      height: 100vh;
+      position: fixed;
+      z-index: 999;
+      transition: opacity-down 1s ease-in-out;
+      opacity: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    @keyframes opacity-down {
+      from {
+        opacity: .6;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .title{
+      color:maroon;
+      font-weight: 400;
+      font-size: 5rem;
+      margin: 2rem 0 1rem 0;
+    }
+
+    p{
+      color: white;
+      font-size: 1.1rem;
+      text-align: center;
+    }
+
+    .image{
+      height: 40%;
+      width: 40%;
+      margin-bottom: 2rem;
+    }
+
+    .enemy {
+      height: 20%;
+      width: 20%;
+      margin-bottom: 2rem;
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+    }
+
+    .step {
+      width: 20rem;
+      margin: 0 2rem 2rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .controls {
+      width: 40rem;
+      margin: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .red {
+      color: maroon;
+    }
+
+    .progress {
+      position: fixed;
+      z-index: 99;
+      display: flex;
+      justify-content: space-between;
+      width: 95%;
+      margin: 2rem;
+      opacity: .4;
+    }
+
+    .image-progress {
+      height: 2rem;
+      width: auto;
+      margin-left: 1rem;
+    }
+
+    .collected-keys {
+      display: flex;
+      width: 20rem;
+    }
+
+    .endscreen {
+      background-color: black;
+      width: 100vw;
+      height: 100vh;
+      position: fixed;
+      z-index: 990;
+      transition: opacity-up 1s ease-in-out;
+      opacity: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @keyframes opacity-up {
+      from {
+        opacity: 1;
+      }
+
+      to {
+        opacity: .6;
+      }
+    }
+    .hide {
+      opacity: 0;
+    }
   </style>
 </head>
 
 <body>
   <div>
-    <div class="startscreen"></div>
+    <div class="startscreen">
+      <h1 class="title">Silent Labrinth</h1>
+      <p>You wake up in a maze, completely in the dark and alone...at least you hope so.</p>
+
+      <div class="steps">
+        <div class="step">
+          <img class="image" src="assets/img/hands.png" alt="hands" width="362" height="353">
+          <p>Light your way by <span class="red">making a loud noise</span>, it's the only way to get a sense of your
+            surroundings...</p>
+        </div>
+        <div class="step">
+          <img class="image" src="assets/img/key.png" alt="key" width="430" height="291">
+          <p>You'll need to <span class="red">find and collect three keys</span> to open the exit of the maze, if you
+            even make it there...</p>
+        </div>
+        <div class="step">
+          <img class="enemy" src="assets/img/enemy.png" alt="enemy" width="248" height="851">
+          <p><span class="red">Don't be too loud</span>, things are lurking around, they might not see you but they can
+            hear very well...</p>
+        </div>
+      </div>
+      <div class="controls">
+        <img class="enemy" src="assets/img/controls.png" alt="controls" width="373" height="236">
+        <p>Use the <span class="red">UP, DOWN, LEFT and RIGHT</span> keys to move around, hit the <span class="red">SPACEBAR</span>
+          to start the game</p>
+      </div>
+    </div>
+
+    <div class="endscreen">
+      <h2 class="title" id="endscreen-title"></h2>
+      <p id="endscreen-text"></p>
+    </div>
+
+    <div class="progress">
+      <p class="time"></p>
+      <div class="collected-keys">
+        <p>Keys collected:</p>
+      </div>
+    </div>
+
     <div id="world"></div>
   </div>
   <button id="cameraFullMaze">Maze Overview</button>

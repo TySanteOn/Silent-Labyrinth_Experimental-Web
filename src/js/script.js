@@ -29,6 +29,14 @@ import Player from "./classes/Player.js"
 
   let keys = [];
 
+  let score = 0;
+
+  const start = Date.now();
+
+  const $startscreen = document.querySelector(`.startscreen`);
+  const $endscreen = document.querySelector(`.endscreen`);
+
+
   const keyPositions = [
     {
       x: 350,
@@ -63,7 +71,7 @@ import Player from "./classes/Player.js"
   ];
 
   const init = () => {
-    
+
     createScene();
     createCamera();
     loadMaze();
@@ -168,11 +176,46 @@ import Player from "./classes/Player.js"
 
   };
 
+  const addKeyToProgress = () => {
+    if (score < 3) {
+      score += 1;
+      const collectedKeys = document.querySelector(`.collected-keys`);
+      const img = document.createElement("img");
+      img.classList.add(`image-progress`);
+      img.src = `assets/img/key.png`;
+      img.width = 430;
+      img.height = 291;
+      collectedKeys.appendChild(img);
+    }
+  };
+
+  const removeKey = () => {
+    const key1 = scene.getObjectByName(`${getal1}`);
+    const key2 = scene.getObjectByName(`${getal2}`);
+    const key3 = scene.getObjectByName(`${getal3}`);
+    //console.log(key1, key2, key3);
+    console.log(key1.position.z);
+    console.log(key1.position.z + 10);
+    console.log(camera.position.z);
+
+    if (key1.position.z - 10 >= camera.position.z && key1.position.z + 10 <= camera.position.z) {
+      scene.remove(key1);
+    }
+    if (key2.position.x === camera.position.x && key2.position.z === camera.position.z) {
+      scene.remove(key2);
+    }
+    if (key3.position.x === camera.position.x && key3.position.z === camera.position.z) {
+      scene.remove(key3);
+    }
+    //scene.remove(selectedKey);
+    //console.log(keys);
+  };
+
   const loadKey = (getal) => {
     loader = new THREE.ObjectLoader();
     loader.load('assets/data/key.dae.json', object => {
       key = object;
-      key.name = getal;
+      key.name = `${getal}`;
       key.scale.set(.1, .1, .1);
       key.position.y = 180;
       key.receiveShadow = true;
@@ -188,7 +231,6 @@ import Player from "./classes/Player.js"
       pointLightKey.castShadow = true;
 
       keys.push(key);
-      console.log(scene);
       keys.forEach(key => {
         scene.add(key, pointLightKey);
       });
@@ -205,6 +247,8 @@ import Player from "./classes/Player.js"
       getRandomNumbers();
       createKeys();
     }
+    console.log(scene);
+    console.log(keys);
   };
 
   const getRandomNumbers = () => {
@@ -244,7 +288,7 @@ import Player from "./classes/Player.js"
     let vector;
     vector = camera.getWorldDirection(vector);
     const angle = Math.atan2(vector.z, vector.x) * -1;
-    
+
     switch (e.code) {
       case 'ArrowLeft':
         camera.rotation.y += (10 * Math.PI) / 180;
@@ -260,6 +304,13 @@ import Player from "./classes/Player.js"
         playerX -= Math.cos(angle) * 20;
         playerZ += Math.sin(angle) * 20;
         break;
+      case 'Enter':
+        addKeyToProgress();
+        break;
+      case 'Space':
+        $startscreen.classList.toggle(`hide`);
+        $endscreen.classList.toggle(`hide`);
+        break;
     }
 
     if (overview) {
@@ -270,39 +321,38 @@ import Player from "./classes/Player.js"
       camera.position.set(playerX, playerY, playerZ);
       camera.rotation.x = 0;
     }
-    if (e.code === 'Space') {
 
-    }
 
     pointLight.position.set(playerX, playerY, playerZ);
     player1.mesh.position.set(playerX - 50, playerY, playerZ);
-    
+
 
     renderer.render(scene, camera);
-  }
+  };
 
   const editLightPower = () => {
-    if (micIsOn){
+    if (micIsOn) {
       pointLight.power = volume * 40;
     }
-  }
+  };
 
-
-  const checkKeyCameraPos = () => {
-    // if (keys[0].position.x === camera.position.x && keys[0].position.z === camera.position.z) {
-    //   scene.remove(scene.children);
-    // };
-  }
+  const showWinscreen = () => {
+    if (camera.position.z < -950) {
+      const title = document.getElementById(`endscreen-title`);
+      title.textContent = `You got out!`;
+      const text = document.getElementById(`endscreen-text`);
+      text.textContent = `Thanks for playing! Want to play again? Press the SPACEBAR!`;
+      $endscreen.classList.remove(`hide`);
+    }
+  };
 
   const loop = () => {
     requestAnimationFrame(loop);
     keys.forEach(key => {
       key.rotation.y += 0.02;
     });
-
-    checkKeyCameraPos();
     editLightPower();
-    //key.rotation.y += 0.05;
+    showWinscreen();
     renderer.render(scene, camera);
   };
 
