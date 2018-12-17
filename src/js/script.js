@@ -170,7 +170,7 @@ import EntityLight from "./classes/EntityLight.js";
 
   const timeEnemyMove = () => {
     moveEnemies();
-    window.setTimeout(timeEnemyMove, 10000);
+    // window.setTimeout(timeEnemyMove, 10000);
   };
 
   const createCamera = () => {
@@ -229,10 +229,7 @@ import EntityLight from "./classes/EntityLight.js";
   const removeKey = (key) => {
     const takenKey = scene.getObjectByName(key.name);
 
-    console.log(scene);
-
     scene.remove(takenKey);
-    scene.remove(takenKeyLight);
     addKeyToProgress();
   };
 
