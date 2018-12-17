@@ -8,9 +8,9 @@ class Maze {
                 child.castShadow = true;
                 child.receiveShadow = true;
 
-                const box = new THREE.Box3().setFromObject(child);
-                box.name = `wall ${index}`;
-                this.boxes.push(box);
+                // const box = new THREE.Box3().setFromObject(child);
+                // box.name = `wall ${index}`;
+                // this.boxes.push(box);
             });
             object.name = "maze";
             
