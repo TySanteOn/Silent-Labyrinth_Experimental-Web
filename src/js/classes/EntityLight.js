@@ -1,6 +1,6 @@
 class EntityLight {
-  constructor(x, y, z, color) {
-    this.light = new THREE.PointLight(color, 1, 1000, 2);
+  constructor(x, y, z, color, intensity) {
+    this.light = new THREE.PointLight(color, 1, intensity, 1);
     this.light.position.set(x, y, z);
     this.light.castShadow = true;
   }
