@@ -8,7 +8,7 @@ You’ll be dropped inside a labyrinth where you’ll have to find three keys to
 
 You’ll be blind and the only way you can see is by using sound to echolocate your way through the labyrinth.
 
-Also there’ll be a monster that wants to steal your keys. This monster can’t see, but will follow the sounds it hears, so you shouldn’t be too loud.
+Also there’ll be a monster that wants to steal your keys. This monster can’t see, but will come to the sounds it hears, so you shouldn’t be too loud.
 
 ## Game backstory 
 \--- more info later \---
@@ -31,3 +31,11 @@ Don’t forget you can’t walk silently.
 ## Possible future features
 * Multiplayer
 * WebVR 
+* A* Pathfinding Algorithms
+
+## Minimum browser requirements
+* Chrome 10+
+* Firefox 25+
+* Opera 15+
+* Safari 6+
+* Edge

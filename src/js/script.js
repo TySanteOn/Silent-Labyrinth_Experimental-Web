@@ -170,7 +170,7 @@ import EntityLight from "./classes/EntityLight.js";
 
   const timeEnemyMove = () => {
     moveEnemies();
-    window.setTimeout(timeEnemyMove, 10000);
+    window.setTimeout(timeEnemyMove, 15000);
   };
 
   const createCamera = () => {
