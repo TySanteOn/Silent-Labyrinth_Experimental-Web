@@ -83,9 +83,6 @@ import EntityLight from "./classes/EntityLight.js";
     createCamera();
     getRandomNumbers();
 
-    hemiLight = new THREE.HemisphereLight(0xffffff);
-    // scene.add(hemiLight);
-
     getMicVolume();
 
     document.getElementById(`cameraFullMaze`).addEventListener('click', handleButtonClick);
@@ -139,6 +136,8 @@ import EntityLight from "./classes/EntityLight.js";
       enemy = new Enemy(scene, getRandomPlaceInMaze());
       enemies.push(enemy);
     }
+
+    window.setTimeout(timeEnemyMove, 1000);
   };
 
   const moveEnemies = () => {
@@ -168,6 +167,11 @@ import EntityLight from "./classes/EntityLight.js";
       createKeys();
     }
   }
+
+  const timeEnemyMove = () => {
+    moveEnemies();
+    window.setTimeout(timeEnemyMove, 10000);
+  };
 
   const createCamera = () => {
 
@@ -225,20 +229,11 @@ import EntityLight from "./classes/EntityLight.js";
   const removeKey = (key) => {
     const takenKey = scene.getObjectByName(key.name);
 
-    //console.log(key1, key2, key3);
-    console.log(takenKey);
+    console.log(scene);
 
-    // if (key1.position.z - 10 >= camera.position.z && key1.position.z + 10 <= camera.position.z) {
-    //   scene.remove(key1);
-    // }
-    // if (key2.position.x === camera.position.x && key2.position.z === camera.position.z) {
-    //   scene.remove(key2);
-    // }
-    // if (key3.position.x === camera.position.x && key3.position.z === camera.position.z) {
-    //   scene.remove(key3);
-    // }
-    // //scene.remove(selectedKey);
-    //console.log(keys);
+    scene.remove(takenKey);
+    scene.remove(takenKeyLight);
+    addKeyToProgress();
   };
 
   const getRandomNumbers = () => {
@@ -255,7 +250,7 @@ import EntityLight from "./classes/EntityLight.js";
   };
 
   const handleKeyDown = e => {
-    checkTestWallCollider();
+    // checkTestWallCollider();
     keyCollider();
     let vector = new THREE.Vector3();
     camera.getWorldDirection(vector);
@@ -275,10 +270,6 @@ import EntityLight from "./classes/EntityLight.js";
       case 'ArrowDown':
         playerX -= Math.cos(angle) * 20;
         playerZ += Math.sin(angle) * 20;
-        break;
-      case 'Enter':
-        addKeyToProgress();
-        moveEnemies();
         break;
     }
 
@@ -300,10 +291,7 @@ import EntityLight from "./classes/EntityLight.js";
 
   const editLightPower = () => {
     if (micIsOn) {
-      playerLight.light.power = volume * 60;
-
-      // scene.getObjectByName('enemyLight').light.power = volume * 40;
-      // 18 is al luid
+      playerLight.light.power = volume * 50;
     }
   }
 
@@ -311,9 +299,6 @@ import EntityLight from "./classes/EntityLight.js";
     keys.forEach((key, index) => {
       const box = new THREE.Box3().setFromObject(key);
       box.name = `keyBox ${index}`;
-      box.index = index;
-      const helper = new THREE.Box3Helper(box, 0xffffff);
-      scene.add(helper);
       if (80 > box.distanceToPoint(player1.mesh.position) > 0) {
         removeKey(keys[index]);
         keys = keys.filter(key => {
@@ -321,24 +306,10 @@ import EntityLight from "./classes/EntityLight.js";
             return true;
           };
         });
-        console.log(keys);
-
       }
     });
     renderer.render(scene, camera);
   }
-
-  const checkTestWallCollider = () => {
-    // maze..forEach(box => {
-    //   if (50 > box.distanceToPoint(player1.mesh.position) > 0) {
-    //     console.log("box: ", box);
-    //     const helper = new THREE.Box3Helper(box, 0xffffff);
-    //     scene.remove(scene.children[14]);
-    //     scene.add(helper);
-    //     console.log("distance: ", box.distanceToPoint(player1.mesh.position));
-    //   }
-    // });
-  };
 
   const showWinscreen = () => {
     if (camera.position.z < -950) {

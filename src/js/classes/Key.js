@@ -18,6 +18,7 @@ class Key {
 
             const pointLightKey = new EntityLight(key.position.x, key.position.y, key.position.z, color, 500);
             pointLightKey.light.castShadow = true;
+            pointLightKey.name = `keyLight${getal}`;
 
             keys.push(key);
             scene.add(key, pointLightKey.light);
