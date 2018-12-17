@@ -25,19 +25,20 @@ import EntityLight from "./classes/EntityLight.js";
     playerY = 200,
     playerZ = 20,
     overview = false,
+    score = 0,
+    keys = [],
+    getal1,
+    getal2,
+    getal3,
+    randomX,
+    randomZ,
     box;
 
   let hemiLight;
 
   let enemy, door, key, maze;
 
-  let getal1, getal2, getal3;
-
-  let keys = [];
-
-  let score = 0;
-
-  const start = Date.now();
+  const enemies = [];
 
   const $startscreen = document.querySelector(`.startscreen`);
   const $endscreen = document.querySelector(`.endscreen`);
@@ -88,9 +89,10 @@ import EntityLight from "./classes/EntityLight.js";
     createEntities();
 
     getMicVolume();
-    loop();
 
     document.getElementById(`cameraFullMaze`).addEventListener('click', handleButtonClick);
+    document.getElementById(`start-button`).addEventListener('click', handleStartClick);
+    document.getElementById(`restart-button`).addEventListener('click', handleRestartClick);
     document.addEventListener('keydown', handleKeyDown);
   };
 
@@ -107,6 +109,16 @@ import EntityLight from "./classes/EntityLight.js";
     }
   };
 
+  const handleStartClick = () => {
+    createEntities();
+    loop();
+    $startscreen.classList.add(`hide`);
+  };
+
+  const handleRestartClick = () => {
+    location.reload();
+  };
+
   const createEntities = () => {
     //Maze
     maze = new Maze(scene);
@@ -115,22 +127,35 @@ import EntityLight from "./classes/EntityLight.js";
     door = new Door(scene);
 
     // Player
-    const playerStartX = 50;
-    const playerStartY = 180;
-    const playerStartZ = 20;
-
-    player1 = new Player(playerStartX, playerStartY, playerStartZ);
+    player1 = new Player(playerX, playerY, playerZ);
     scene.add(player1.mesh);
 
-    playerLight = new EntityLight(playerStartX, playerStartY, playerStartZ, 0xffffff, 1000)
+    playerLight = new EntityLight(playerX, playerY, playerZ, 0xffffff, 1000)
     scene.add(playerLight.light);
 
     // Keys
     createKeys();
 
     //Enemy
-    enemy = new Enemy(scene);
+    for (let i = 0; i < 4; i++) {
+      enemy = new Enemy(scene, getRandomPlaceInMaze());
+      enemies.push(enemy);
+    }
+  };
 
+  const moveEnemies = () => {
+    enemies.forEach(enemy => {
+      const pos = getRandomPlaceInMaze();
+      enemy.enemy.position.set(pos.x, 20, pos.z);
+      enemy.enemyLight.light.position.set(pos.x + 35, 180, pos.z);
+    });
+  };
+
+  const deleteEnities = () => {
+    const length = scene.children.length;
+    for (let i = 0; i < length; i++) {
+      scene.children.pop();
+    }
   };
 
   const createKeys = () => {
@@ -225,6 +250,12 @@ import EntityLight from "./classes/EntityLight.js";
 
   };
 
+  const getRandomPlaceInMaze = () => {
+    randomX = Math.floor(Math.random() * 3000 - 800);
+    randomZ = Math.floor(Math.random() * 3000 - 800);
+    return new THREE.Vector3(randomX, 20, randomZ);
+  };
+
   const handleKeyDown = e => {
     checkTestWallCollider();
     keyCollider();
@@ -249,10 +280,7 @@ import EntityLight from "./classes/EntityLight.js";
         break;
       case 'Enter':
         addKeyToProgress();
-        break;
-      case 'Space':
-        $startscreen.classList.toggle(`hide`);
-        $endscreen.classList.toggle(`hide`);
+        moveEnemies();
         break;
     }
 
@@ -273,7 +301,7 @@ import EntityLight from "./classes/EntityLight.js";
   };
 
   const editLightPower = () => {
-    if (micIsOn){
+    if (micIsOn) {
       playerLight.light.power = volume * 60;
 
       // scene.getObjectByName('enemyLight').light.power = volume * 40;
@@ -319,9 +347,18 @@ import EntityLight from "./classes/EntityLight.js";
       const title = document.getElementById(`endscreen-title`);
       title.textContent = `You got out!`;
       const text = document.getElementById(`endscreen-text`);
-      text.textContent = `Thanks for playing! Want to play again? Press the SPACEBAR!`;
+      text.textContent = `Thanks for playing!`;
       $endscreen.classList.remove(`hide`);
     }
+  };
+
+  const showDeathscreen = () => {
+    const title = document.getElementById(`endscreen-title`);
+    title.textContent = `They got you...`;
+    const text = document.getElementById(`endscreen-text`);
+    text.textContent = `Thanks for playing!`;
+    $endscreen.classList.add(`deathscreen-image`);
+    $endscreen.classList.remove(`hide`);
   };
 
   const loop = () => {
