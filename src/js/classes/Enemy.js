@@ -14,7 +14,7 @@ class Enemy {
         child.receiveShadow = true;
       });
 
-      this.enemyLight = new EntityLight(position.x + 35, position.y + 160, position.z, 0xff5e54);
+      this.enemyLight = new EntityLight(position.x + 35, position.y + 160, position.z, 0xff5e54, 1000);
       this.enemyLight.light.castShadow = true;
 
       scene.add(this.enemy, this.enemyLight.light);
