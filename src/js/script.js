@@ -86,8 +86,6 @@ import EntityLight from "./classes/EntityLight.js";
     hemiLight = new THREE.HemisphereLight(0xffffff);
     // scene.add(hemiLight);
 
-    createEntities();
-
     getMicVolume();
 
     document.getElementById(`cameraFullMaze`).addEventListener('click', handleButtonClick);
@@ -137,7 +135,7 @@ import EntityLight from "./classes/EntityLight.js";
     createKeys();
 
     //Enemy
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 3; i++) {
       enemy = new Enemy(scene, getRandomPlaceInMaze());
       enemies.push(enemy);
     }
@@ -319,27 +317,27 @@ import EntityLight from "./classes/EntityLight.js";
       if (80 > box.distanceToPoint(player1.mesh.position) > 0) {
         removeKey(keys[index]);
         keys = keys.filter(key => {
-          if(key != keys[index]){
+          if (key != keys[index]) {
             return true;
-          }; 
+          };
         });
         console.log(keys);
-        
+
       }
     });
     renderer.render(scene, camera);
   }
 
   const checkTestWallCollider = () => {
-      // maze..forEach(box => {
-      //   if (50 > box.distanceToPoint(player1.mesh.position) > 0) {
-      //     console.log("box: ", box);
-      //     const helper = new THREE.Box3Helper(box, 0xffffff);
-      //     scene.remove(scene.children[14]);
-      //     scene.add(helper);
-      //     console.log("distance: ", box.distanceToPoint(player1.mesh.position));
-      //   }
-      // });
+    // maze..forEach(box => {
+    //   if (50 > box.distanceToPoint(player1.mesh.position) > 0) {
+    //     console.log("box: ", box);
+    //     const helper = new THREE.Box3Helper(box, 0xffffff);
+    //     scene.remove(scene.children[14]);
+    //     scene.add(helper);
+    //     console.log("distance: ", box.distanceToPoint(player1.mesh.position));
+    //   }
+    // });
   };
 
   const showWinscreen = () => {
@@ -358,7 +356,7 @@ import EntityLight from "./classes/EntityLight.js";
     const text = document.getElementById(`endscreen-text`);
     text.textContent = `Thanks for playing!`;
     $endscreen.classList.add(`deathscreen-image`);
-    $endscreen.classList.remove(`hide`);
+    //$endscreen.classList.remove(`hide`);
   };
 
   const loop = () => {
