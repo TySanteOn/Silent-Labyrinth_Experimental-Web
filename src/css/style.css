@@ -136,6 +136,10 @@
     justify-content: center;
   }
 
+  .deathscreen-image {
+      background-image: url(../assets/img/enemy-face.png);
+  }
+
   @keyframes opacity-up {
     from {
       opacity: 1;
@@ -147,4 +151,19 @@
   }
   .hide {
     display: none;
+  }
+
+  .button-screens {
+    margin-top: 2rem;
+    width: 8rem;
+    height: 4rem;
+  }
+
+  button {
+    color: white;
+    background-color:maroon;
+  }
+
+  button:hover {
+      background-color: firebrick;
   }
